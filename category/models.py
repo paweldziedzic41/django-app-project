@@ -12,10 +12,9 @@ class Category(models.Model):
         verbose_name = 'category'
         verbose_name_plural = 'categories'
 
-    # This function brings the url of the partciular category in the navbar
+        # This function brings the url of the partciular category in the navbar
     def get_url(self):
         return reverse('products_by_category', args = [self.slug])
-
 
     def __str__(self):
         return self.category_name
