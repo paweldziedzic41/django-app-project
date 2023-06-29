@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # Added variable menu_links from content_processors
                 'category.context_processors.menu_links',
+                'carts.contect_processors.counter',
             ],
         },
     },
