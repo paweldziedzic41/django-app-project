@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from store.models import product
+from store.models import product, Variation
 from .models import Cart, CartItem
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
@@ -16,6 +16,22 @@ def _cart_id(request):
 def add_cart(request, product_id):
     # Get the product
     products = product.objects.get(id = product_id) 
+    # Storing the variation of the product in a list
+    products_variation = []
+
+    if request.method == 'POST':
+        for item in request.POST:
+            key = item
+            # In the value variable are stored all informations
+            value = request.POST[key]
+            try:
+                # __iexact formula will ignore if the key or value is lower or caps letter
+                variation = Variation.objects.get(product = products, variation_category__iexact = key, variation_value__iexact = value)  
+                products_variation.append(variation)
+            except:
+                pass
+
+    
     # If the session key exists in the database, it only attributes another product to it
     try:
         # Get the cart using the _cart_id function

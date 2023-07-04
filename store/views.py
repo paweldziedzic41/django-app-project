@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from .models import product
+from .models import product, Variation
 from category.models import Category
 from carts.models import CartItem
 from carts.views import _cart_id
+from django.db.models import Q
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 # Create your views here.
@@ -53,3 +54,17 @@ def product_detail(request, category_slug, product_slug):
     }
 
     return render(request, 'store/product_detail.html', context)
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        if keyword:
+            # Filter looks in description or name of the product and if it finds something similar to keyword then displays it 
+            # Q module enables to use logical combination such as: '&' or '|' 
+            products = product.objects.order_by('-created_date').filter(Q(description__icontains = keyword) | Q(product_name__icontains = keyword))
+            product_count = products.count()
+    context = {
+        'products' : products,
+        'product_count' : product_count,
+    }
+    return render(request, 'store/store.html', context)
