@@ -55,10 +55,7 @@
                     <hr>
                     {% if single_product.stock <= 0 %}
                       <h5 style = "color:red;">Out of stock</h5>
-                    {% elif in_cart == True %}
-                      <a href="#" class="btn btn-success"> <span class="text">Added to cart</span> <i class="fas fa-check"></i>  </a>
-                      <a href="{% url 'cart'%}" class="btn btn-primary"> <span class="text">View cart</span> <i class="fas float-md-right"></i>  </a>
-                    {% elif single_product.stock >= 1 %}
+                    {% else %}
                       <button type="submit"  class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </button>
                     {% endif %}
                   </article> <!-- product-info-aside .// -->
