@@ -136,4 +136,22 @@ MEDIA_ROOT = BASE_DIR /'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+# C
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from django.contrib.messages import constants as messages
+# MESSAGE_TAGS is used to map message levels to css classes
+MESSAGE_TAGS = {
+    messages.ERROR : 'danger',
+    50: 'critical',
+}
+
+### Configuring SMTP
+EMAIL_HOST = 'smtp.gmail.com'
+# email_PORT depends on which email site will be used
+EMIAL_PORT = '587'
+EMAIL_HOST_USER = 'paweldziedzic41@gmail.com'
+EMAIL_HOST_PASSWORD = 'admin'
+# TLS - transport layer security used when comunicating with the server
+EMAIL_USE_TLS = True
