@@ -30,7 +30,7 @@
               </div> <!-- form-group// -->
               
               <div class="form-group">
-                  <a href="#" class="float-right">Forgot password?</a> 
+                  <a href="{% url 'forgotPassword' %}" class="float-right">Forgot password?</a> 
                
               </div> <!-- form-group form-check .// -->
               <div class="form-group">
@@ -40,7 +40,7 @@
           </div> <!-- card-body.// -->
         </div> <!-- card .// -->
     
-         <p class="text-center mt-4">Don't have account? <a href="#">Sign up</a></p>
+         <p class="text-center mt-4">Don't have account? <a href="{% url 'login' %}">Sign up</a></p>
          <br><br>
     <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
     

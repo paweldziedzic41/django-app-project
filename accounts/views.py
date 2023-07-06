@@ -11,10 +11,66 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
+from django.contrib.auth.hashers import check_password
 # Create your views here.
+
+def forgotPassword(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        verify = Account._default_manager.filter(email = email).exists()
+        if verify == True:
+            user = Account._default_manager.get(email=email)
+            # Forming a mail message
+            current_site = get_current_site(request)
+            mail_subject = "Change password"
+            message = render_to_string('accounts/reset_password_email.html', {
+                'user': user,
+                'domain': current_site,
+                'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            to_email = email
+            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            send_email.send()
+            messages.success(request,"Your link to password reset was sent on mail account")
+            return redirect('login')
+        else:
+            messages.error(request, 'Email does not exist in the database')
+            return redirect('forgotPassword')
+    return render(request, 'accounts/forgotPassword.html')
+
+
+
+def validateEmail(request,uidb64,token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Account._default_manager.get(pk = uid)
+    except(TypeError,ValueError,OverflowError,Account.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        return redirect('/accounts/forgotPassword/?command=changePassword&email='+user.email)
+    else:
+        messages.error(request, 'Invalid activation link')
+        return redirect('forgetPassword')
+
+def changePassword(request):
+    if request.method == 'POST':
+        password = request.POST['password']
+        confrim_password = request.POST['confirm_password']
+        if password == confrim_password:
+            email = request.POST['email']
+            user = Account._default_manager.get(email=email)
+            user.set_password(password)
+            user.save()
+            messages.success(request, "Password has been changed succesfully.")
+            return redirect('login')
+        else:
+            messages.error(request, 'Passwords do not match. Try again')
+            return redirect('/accounts/forgotPassword/?command=changePassword&email='+user.email)
 
 @login_required(login_url = 'login')
 def dashboard(request):
+    print(request)
     return render(request, 'accounts/dashboard.html')
 
 def register(request):
