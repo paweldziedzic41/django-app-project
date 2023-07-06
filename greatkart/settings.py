@@ -148,10 +148,13 @@ MESSAGE_TAGS = {
 }
 
 ### Configuring SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 # email_PORT depends on which email site will be used
-EMIAL_PORT = '587'
+EMIAL_PORT = 587
+# email host name which from the email with verification is sent
 EMAIL_HOST_USER = 'paweldziedzic41@gmail.com'
-EMAIL_HOST_PASSWORD = 'admin'
+# Generated password for app in gmail
+EMAIL_HOST_PASSWORD = 'xktglrmwuifjawak'
 # TLS - transport layer security used when comunicating with the server
 EMAIL_USE_TLS = True
