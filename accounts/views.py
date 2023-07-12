@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .forms import RegsitrationForm
 from .models import Account
+from carts.models import Cart, CartItem
+from carts.views import _cart_id, change_cart_items_when_logged
 from django.contrib import messages, auth
 from django.http import HttpResponse
 # Django modules for token validation
@@ -12,6 +14,7 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.contrib.auth.hashers import check_password
+import requests
 # Create your views here.
 
 def forgotPassword(request):
@@ -127,15 +130,33 @@ def login(request):
         # Getting email and password from the input fields
         email = request.POST['email']
         password = request.POST['password']
-        
         # Authentication if the email and password, exist in database and are correct
         user = auth.authenticate(email = email, password = password)
 
-        # If the user exist
+        try:
+            cart = Cart.objects.get(cart_id = _cart_id(request))
+            session_cart_items = CartItem.objects.filter(cart = cart)
+        except:
+            pass
+        # If the user exist         
         if user is not None:
+            if CartItem.objects.filter(cart = cart).exists():
+                change_cart_items_when_logged(session_cart_items, user, cart)
+                cart.delete()
+                
+            
             auth.login(request,user)
             messages.success(request, "You are logged on")
-            return redirect('dashboard')
+            
+            # Gets the url from the previous site
+            url = request.META.get('HTTP_REFERER')
+            if 'next' in url:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                return redirect(params['next'])
+            else:
+                return redirect('dashboard')
+               
         # If the user doesn't exist
         else:
             messages.error(request, "Invalid login")
