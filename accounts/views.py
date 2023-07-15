@@ -140,10 +140,12 @@ def login(request):
             pass
         # If the user exist         
         if user is not None:
-            if CartItem.objects.filter(cart = cart).exists():
-                change_cart_items_when_logged(session_cart_items, user, cart)
-                cart.delete()
-                
+            try:
+                if CartItem.objects.filter(cart = cart).exists():
+                    change_cart_items_when_logged(session_cart_items, user, cart)
+                    cart.delete()
+            except:
+                pass    
             
             auth.login(request,user)
             messages.success(request, "You are logged on")

@@ -11,7 +11,8 @@
             <div class = "card">
                 <div class="card-body">
                     <h4 class="card-title mb-4"> Billing Address </h4>
-                    <form action="" method="post">
+                    <form id = "OrderForm" action="{% url 'place_order' %}" method="POST">
+                        {% csrf_token %}
                         <div class="form-row">
                             <div class="col form-group">
                                 <label for="">First Name</label>
@@ -29,7 +30,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="">Phone number</label>
-                                <input type="text" name="phone_number" class="form-control" required>
+                                <input type="text" name="phone" class="form-control" required>
                             </div>
                         </div>
                         <div class="form-row">
@@ -39,7 +40,7 @@
                             </div>
                             <div class="col form-group">
                                 <label for="">Address line 2</label>
-                                <input type="text" name="address_line_2" class="form-control" required>
+                                <input type="text" name="address_line_2" class="form-control">
                             </div>
                         </div>
                         <div class="form-row">
@@ -114,7 +115,7 @@
                             {% endfor %}
                             </tbody>
                             </table>
-                    <a href="#" class="btn btn-primary btn-block"> Place order </a>
+                    <button onclick="submitForm()" class="btn btn-primary btn-block"> Place order </button>
                     <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
 			</div> <!-- card.// -->
         </aside> <!-- col.// -->
@@ -125,5 +126,11 @@
 
 </div> <!-- container .//  -->
 </section>
+
+<script>
+    function submitForm() {
+      document.getElementById("OrderForm").submit();
+    }
+  </script>
 
 {% endblock %}
